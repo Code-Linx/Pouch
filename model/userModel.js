@@ -17,6 +17,16 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     validate: [validator.isEmail, "Please Provide a valid Email"],
   },
+  emailVerified: {
+    type: Boolean,
+    default: false,
+  },
+  emailVerificationToken: {
+    type: String,
+  },
+  emailVerificationTokenExpires: {
+    type: Date,
+  },
   userName: {
     type: String,
     unique: true,

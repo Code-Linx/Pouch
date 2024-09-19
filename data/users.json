@@ -1,0 +1,72 @@
+[
+  {
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john.doe@example.com",
+    "password": "$2b$10$WqPN9TcYzT2XbUIW0uOE1OwbUMgrpiG39f6c8O1Z5rORaGZcNHCOm", // Hashed password
+    "kyc": {
+      "isVerified": true,
+      "verificationDate": "2024-09-10T10:30:00Z",
+      "documents": ["path/to/kyc/document1.pdf", "path/to/kyc/document2.pdf"]
+    },
+    "role": "user", // Standard user role
+    "expenses": [
+      {
+        "amount": 150,
+        "description": "Groceries",
+        "date": "2024-09-15T09:30:00Z"
+      },
+      {
+        "amount": 50,
+        "description": "Transportation",
+        "date": "2024-09-16T11:00:00Z"
+      }
+    ],
+    "income": [
+      {
+        "amount": 2000,
+        "source": "Salary",
+        "date": "2024-09-01T08:00:00Z"
+      }
+    ],
+    "budget": {
+      "monthlyIncome": 2000,
+      "monthlyExpenses": 200
+    }
+  },
+  {
+    "firstName": "Jane",
+    "lastName": "Smith",
+    "email": "jane.smith@example.com",
+    "password": "$2b$10$H/EqzYlpmp1L9JozG4v8OOScmlb9pVz3E8F6eOBZ9HNdFqZh19mZG", // Hashed password
+    "kyc": {
+      "isVerified": false,
+      "verificationDate": null,
+      "documents": []
+    },
+    "role": "admin", // Admin role
+    "expenses": [
+      {
+        "amount": 500,
+        "description": "Rent",
+        "date": "2024-09-01T12:00:00Z"
+      },
+      {
+        "amount": 30,
+        "description": "Utilities",
+        "date": "2024-09-05T14:30:00Z"
+      }
+    ],
+    "income": [
+      {
+        "amount": 3000,
+        "source": "Freelance Project",
+        "date": "2024-09-07T09:00:00Z"
+      }
+    ],
+    "budget": {
+      "monthlyIncome": 3000,
+      "monthlyExpenses": 530
+    }
+  }
+]

@@ -7,5 +7,5 @@ const verifyEmailController = require("../middleware/verifyemail");
 const router = express.Router();
 router.route("/signUp").post(authController.signUp);
 router.route("/login").post(userController.login);
-router.route("/verifyEmail/:token").post(authController.verifyEmail);
+router.route("/verifyEmail/:token").post(verifyEmailController.verifyEmail);
 module.exports = router;

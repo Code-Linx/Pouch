@@ -1,37 +1,64 @@
-const Email = require("../util/email"); // Ensure your Email utility is required
-const User = require("../model/userModel"); // Adjust the path as necessary
+const crypto = require("crypto");
+const { Email } = require("../util/email");
+const User = require("../model/userModel");
+const jwt = require("jsonwebtoken");
 
-exports.verifyEmail = async (req, res) => {
-  try {
-    const token = req.params.token;
+// Helper function to sign a JWT
+const signToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+};
 
-    // Find the user by the token and verify it
-    const user = await User.findOne({ emailVerificationToken: token });
+// Helper function to send the token and response
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+    ),
+    httpOnly: true,
+  };
+  res.cookie("jwt", token, cookieOptions);
+  user.password = undefined;
+  res.status(statusCode).json({
+    status: "success",
+    token,
+    data: {
+      user,
+    },
+  });
+};
 
-    if (!user || user.isVerified) {
-      return res.status(400).json({
-        status: "failed",
-        message: "Invalid or expired token.",
-      });
-    }
+exports.verifyEmail = async (req, res, next) => {
+  // 1. Get the token from the URL and hash it
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(req.params.token)
+    .digest("hex");
 
-    // Verify the email and remove the token
-    user.isVerified = true;
-    user.emailVerificationToken = undefined; // Optionally remove the token
-    await user.save();
+  // 2. Find the user by the hashed token and check if the token is not expired
+  const user = await User.findOne({
+    emailVerificationToken: hashedToken,
+    emailVerificationExpires: { $gt: Date.now() },
+  });
 
-    // Send a success email
-    const url = `${req.protocol}://${req.get("host")}/login`; // Adjust this as needed
-    await new Email(user, url).sendSuccess(); // Assuming you have a sendSuccess method
-
-    res.status(200).json({
-      status: "success",
-      message: "Email verified successfully!",
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: "failed",
-      message: error.message,
+  if (!user) {
+    return res.status(400).json({
+      status: "Failed",
+      message: "Token is invalid or has expired.",
     });
   }
+
+  // 3. Verify the user’s email and clear the token
+  user.isEmailVerified = true;
+  user.emailVerificationToken = undefined;
+  user.emailVerificationExpires = undefined;
+  await user.save({ validateBeforeSave: false });
+
+  // Send success email
+  await new Email(user, null).sendVerificationSuccess();
+
+  // 4. Send success message and log the user in
+  createSendToken(user, 200, res);
 };

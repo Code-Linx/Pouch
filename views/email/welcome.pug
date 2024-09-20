@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1(style="color: #f78da7; text-align: center;") Welcome to Pouch!
+  p Hello #{firstName},
+  p We're excited to have you join Pouch, your Personal Budget Tracker. Before you can start using all the features, please verify your email using the link below.
+  
+  a(href=verificationUrl, style="background-color: #f78da7; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;") Verify Email
+
+  p(style="margin-top: 20px;") With Pouch, you can easily track your expenses and income, helping you manage your finances effectively. Enjoy your journey with us!
+  
+  p(style="font-size: 12px; color: gray;") If you have any issues verifying your email, please contact us.

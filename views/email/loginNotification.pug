@@ -1,0 +1,13 @@
+extends layout
+
+block content
+    h1 Hello #{firstName},
+    p You have successfully logged in to your Pouch account.
+    p Here are the details of your login:
+    p When: #{loginDetails.when} (UTC)
+    p Device: #{loginDetails.device}
+    p IP Address: #{loginDetails.ip}
+    p Location: #{loginDetails.location}
+    p If you did not initiate this login, please contact our support team immediately at support@pouch.com or call us at 02018889990. Your account may have been compromised.
+    p Kind regards,
+    p The Pouch Team

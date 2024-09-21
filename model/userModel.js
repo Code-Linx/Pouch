@@ -107,11 +107,12 @@ userSchema.pre("save", async function (next) {
 });
 
 // 3. Compare candidate password with the stored password
+
 userSchema.methods.correctPassword = async function (
-  canditatePassword,
+  candidatePassword,
   userPassword
 ) {
-  return await bcrypt.compare(canditatePassword, userPassword);
+  return await bcrypt.compare(candidatePassword, userPassword);
 };
 
 // Method to generate the email verification token

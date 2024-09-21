@@ -3,11 +3,13 @@ const pug = require("pug");
 const { convert } = require("html-to-text");
 
 class Email {
-  constructor(user, url) {
+  constructor(user, url, loginDetails) {
+    // Accept loginDetails here
     this.to = user.email;
     this.firstName = user.firstName;
     this.url = url;
     this.from = `Pouch <${process.env.EMAIL_FROM}>`;
+    this.loginDetails = loginDetails; // Store login details
   }
 
   newTransport() {
@@ -31,9 +33,10 @@ class Email {
       firstName: this.firstName,
       url: this.url,
       subject,
+      loginDetails: this.loginDetails, // Pass loginDetails to the template
     });
 
-    //2Define Email Option
+    // 2) Define Email Options
     const mailOptions = {
       from: this.from,
       to: this.to,
@@ -62,6 +65,12 @@ class Email {
 
   async sendVerificationSuccess() {
     await this.send("verificationSuccess", "Email Verification Successful!");
+  }
+
+  async sendLoginNotification() {
+    const subject = "Login Notification";
+    const template = "loginNotification";
+    await this.send(template, subject);
   }
 }
 

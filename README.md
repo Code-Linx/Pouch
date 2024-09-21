@@ -28,7 +28,7 @@ We are currently in the **Development** stage. The following features have been 
 
 - Node.js
 - Express.js
-- MongoDB (or your chosen database)
+- MongoDB
 - Nodemailer for email notifications
 - Pug for templating
 

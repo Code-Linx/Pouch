@@ -1,25 +1,39 @@
-const express = require("express");
 const path = require("path");
+const express = require("express");
+const bodyParser = require("body-parser");
 const morgan = require("morgan");
+
+const { AppError } = require("./util/appError");
 const userRouter = require("./routes/userRoutes");
+const globalErrorHandler = require("./controllers/ErrorController");
 
 // START APP
 const app = express();
+
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 
 //DEVELOPMENT LOGGING
 if ((process.env.NODE_ENV = "development")) {
   app.use(morgan("dev"));
 }
-//BODY PARSER
-app.use(express.json());
-
-app.set("view engine", "pug");
-app.set("views", path.join(__dirname, "views"));
 
 // Serving static files
 app.use(express.static(path.join(__dirname, "public")));
 
+//BODY PARSER
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
 //ROUTES
 app.use("/", userRouter);
 app.use("/api/v1/users", userRouter);
+
+app.all("*", (req, res, next) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+app.use(globalErrorHandler);
 module.exports = app;

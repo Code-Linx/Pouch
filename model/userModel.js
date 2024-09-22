@@ -1,23 +1,23 @@
-const crypto = require("crypto"); // Needed for generating tokens
-const mongoose = require("mongoose");
-const validator = require("validator");
-const bcrypt = require("bcryptjs");
+const crypto = require('crypto'); // Needed for generating tokens
+const mongoose = require('mongoose');
+const validator = require('validator');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
   firstName: {
     type: String,
-    required: [true, "Input Your First Name"],
+    required: [true, 'Input Your First Name'],
   },
   lastName: {
     type: String,
-    required: [true, "Input Your Last Name"],
+    required: [true, 'Input Your Last Name'],
   },
   email: {
     type: String,
-    required: [true, "Please Input Your Email"],
+    required: [true, 'Please Input Your Email'],
     unique: true,
     lowercase: true,
-    validate: [validator.isEmail, "Please Provide a valid Email"],
+    validate: [validator.isEmail, 'Please Provide a valid Email'],
   },
   isEmailVerified: {
     type: Boolean,
@@ -35,30 +35,37 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["user", "admin"],
-    default: "user", // Role defaults to 'user'
+    enum: ['user', 'admin'],
+    default: 'user', // Role defaults to 'user'
   },
   password: {
     type: String,
-    required: [true, "Please provide a password"],
+    required: [true, 'Please provide a password'],
     minlength: 8,
     select: false, // Excludes password from query results by default
   },
   passwordConfirm: {
     type: String,
-    required: [true, "Please Confirm Password"],
+    required: [true, 'Please Confirm Password'],
     validate: {
       // This only works on CREATE and SAVE
       validator: function (el) {
         return el === this.password;
       },
-      message: "Passwords are not the same!",
+      message: 'Passwords are not the same!',
     },
   },
   passwordChangedAt: Date, // Track when the password was changed
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
   DOB: {
     type: Date, // Use Mongoose's built-in Date type
-    required: [true, "Enter Your Date of Birth"],
+    required: [true, 'Enter Your Date of Birth'],
   },
   kyc: {
     isVerified: { type: Boolean, default: false },
@@ -85,21 +92,20 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// Middleware to hash password before saving user
-// 1. Hash the password before saving
-userSchema.pre("save", async function (next) {
+userSchema.pre('save', async function (next) {
+  // 1. Hash the password before saving
   // Only run this function if the password was actually modified
-  if (!this.isModified("password")) return next();
+  if (!this.isModified('password')) return next();
 
-  console.log("Password before hashing:", this.password); // Debug line
+  console.log('Password before hashing:', this.password); // Debug line
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;
   next();
 });
 
 // 2. Set the passwordChangedAt field
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password") || this.isNew) return next();
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
 
   // Set passwordChangedAt to one second in the past to account for token creation delay
   this.passwordChangedAt = Date.now() - 1000;
@@ -117,17 +123,45 @@ userSchema.methods.correctPassword = async function (
 
 // Method to generate the email verification token
 userSchema.methods.createEmailVerificationToken = function () {
-  const verificationToken = crypto.randomBytes(32).toString("hex");
+  const verificationToken = crypto.randomBytes(32).toString('hex');
 
   this.emailVerificationToken = crypto
-    .createHash("sha256")
+    .createHash('sha256')
     .update(verificationToken)
-    .digest("hex"); // Encrypt the token and store it in DB
+    .digest('hex'); // Encrypt the token and store it in DB
 
   this.emailVerificationExpires = Date.now() + 24 * 60 * 60 * 1000; // Token expires in 24 hours
 
   return verificationToken; // Return plain token to send in the email
 };
 
-const User = mongoose.model("User", userSchema);
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10
+    );
+
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  // False means NOT changed
+  return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  console.log({ resetToken }, this.passwordResetToken);
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
+};
+const User = mongoose.model('User', userSchema);
 module.exports = User;

@@ -2,6 +2,8 @@ const crypto = require("crypto");
 const { Email } = require("../util/email");
 const User = require("../model/userModel");
 const jwt = require("jsonwebtoken");
+const { AppError } = require("../util/appError");
+const {} = require("../util/catchAsync");
 
 // Helper function to sign a JWT
 const signToken = (id) => {
@@ -44,10 +46,7 @@ exports.verifyEmail = async (req, res, next) => {
   });
 
   if (!user) {
-    return res.status(400).json({
-      status: "Failed",
-      message: "Token is invalid or has expired.",
-    });
+    return next(new AppError("Token is invalid or has expired.", 400));
   }
 
   // 3. Verify the user’s email and clear the token

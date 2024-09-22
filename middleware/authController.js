@@ -47,6 +47,12 @@ exports.signUp = async (req, res, next) => {
       DOB: req.body.DOB,
     });
 
+    // Check if user already exists
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
     // 1. Send Welcome Email
     const url = `${req.protocol}://${req.get("host")}/me`;
     await new Email(newUser, url).sendWelcome();
@@ -67,10 +73,7 @@ exports.signUp = async (req, res, next) => {
         "Signup successful! Please check your email to verify your account.",
     });
   } catch (err) {
-    res.status(400).json({
-      status: "failed",
-      message: err.message,
-    });
+    res.status(500).json({ error: "Internal server error" });
     console.error(err.message);
   }
   next();

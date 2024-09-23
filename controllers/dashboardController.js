@@ -24,7 +24,7 @@ exports.getDashboard = async (req, res, next) => {
     // Calculate remaining budget
     const remainingBudget = budget
       ? budget.monthlyBudget - totalExpenses
-      : null;
+      : 'Please Create a budget';
 
     res.status(200).json({
       status: 'success',

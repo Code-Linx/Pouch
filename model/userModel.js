@@ -72,23 +72,10 @@ const userSchema = new mongoose.Schema({
     verificationDate: { type: Date },
     documents: { type: [String] }, // Paths to uploaded KYC documents
   },
-  expenses: [
-    {
-      amount: Number,
-      description: String,
-      date: { type: Date, default: Date.now },
-    },
-  ],
-  income: [
-    {
-      amount: Number,
-      source: String,
-      date: { type: Date, default: Date.now },
-    },
-  ],
-  budget: {
-    monthlyIncome: { type: Number, default: 0 },
-    monthlyExpenses: { type: Number, default: 0 },
+  currency: {
+    type: String,
+    required: true, // Ensure each user has a currency set
+    default: 'USD', // You can set a default currency if needed
   },
 });
 

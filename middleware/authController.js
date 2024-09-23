@@ -114,7 +114,7 @@ exports.login = catchAsync(async (req, res, next) => {
   // 4. Send login info email to user
   const loginInfoUrl = `${req.protocol}://${req.get('host')}/login-details`; // Example URL for login details
   const Loginmail = new Email(user, loginInfoUrl, loginDetails); // Pass loginDetails
-  await Loginmail.sendLoginNotification(); // Send the login notification
+  //await Loginmail.sendLoginNotification(); // Send the login notification
 
   //5 Generate JWT token
   createSendToken(user, 200, res);
@@ -151,6 +151,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // 2) Verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+  console.log('Decoded Token:', decoded);
 
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);

@@ -39,4 +39,7 @@ router.post(
   authController.protect,
   categoryController.createCategory
 ); // Create category
+
+router.get('/me', authController.protect, userController.getMe);
+
 module.exports = router;

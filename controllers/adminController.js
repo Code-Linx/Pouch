@@ -1,6 +1,86 @@
 const User = require('../model/userModel');
 const Budget = require('../model/budgetModel');
 const Transaction = require('../model/transactionModel');
+const Category = require('../model/categoryModel');
+
+exports.getAllUser = async (req, res, next) => {
+  try {
+    const user = await User.find();
+    if (!user) {
+      return res.status(404).json({
+        status: 'Failed',
+        message: 'No user Found',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      result: user.length,
+      data: {
+        user,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+
+exports.updateUser = async (req, res, next) => {
+  try {
+    const { email, active, userName, role } = req.body;
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        email: req.body.email,
+        active: req.body.active,
+        role: req.body.role,
+        userName: req.body.userName,
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        status: 'Failed',
+        message: 'No user Found with that id',
+      });
+    }
+
+    res.status(201).json({
+      status: 'successs',
+      data: {
+        user,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+
+exports.deleteUser = async (req, res, next) => {
+  //Get the user By Id
+  const user = await User.findByIdAndDelete(req.params.id);
+  if (!user) {
+    return res.status(404).json({
+      status: 'Failed',
+      message: `No user with that id ${req.params.id}`,
+    });
+  }
+
+  res.status(204).json({
+    status: 'Failed',
+    data: null,
+  });
+};
 
 exports.getUserProfile = async (req, res, next) => {
   try {
@@ -172,4 +252,40 @@ exports.getUserTransactionSummary = async (req, res) => {
       message: error.message,
     });
   }
+};
+
+exports.getAllcategory = async (req, res, next) => {
+  try {
+    const category = await Category.find();
+    if (!category) {
+      return res.status(200).json({
+        status: 'Failed',
+        message: 'No Category Avaliable Now',
+      });
+    }
+    res.status(200).json({
+      status: 'Success',
+      data: category,
+    });
+  } catch (error) {
+    res.status(400).json({ status: 'error', message: error.message });
+  }
+};
+
+exports.getAllBudget = async (req, res, next) => {
+  try {
+    const budget = await Budget.find();
+    if (!budget) {
+      return res.status(200).json({
+        status: 'Failed',
+        message: 'No budget Avaliable Now',
+      });
+    }
+    res.status(200).json({
+      status: 'Success',
+      data: {
+        budget,
+      },
+    });
+  } catch (error) {}
 };

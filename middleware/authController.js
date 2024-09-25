@@ -120,17 +120,6 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-exports.logout = (req, res) => {
-  // Set the jwt cookie to 'loggedout' and make it expire quickly
-  res.cookie('jwt', 'loggedout', {
-    expires: new Date(Date.now() + 10 * 1000), // Expire in 10 seconds
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production', // Secure in production
-  });
-
-  res.status(200).json({ status: 'success' });
-};
-
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there
   let token;
@@ -151,7 +140,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // 2) Verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log('Decoded Token:', decoded);
+  // console.log('Decoded Token:', decoded);
 
   // 3) Check if user still exists
   const currentUser = await User.findById(decoded.id);
@@ -176,6 +165,17 @@ exports.protect = catchAsync(async (req, res, next) => {
   res.locals.user = currentUser;
   next();
 });
+
+exports.logout = (req, res) => {
+  // Set the jwt cookie to 'loggedout' and make it expire quickly
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000), // Expire in 10 seconds
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', // Secure in production
+  });
+
+  res.status(200).json({ status: 'success' });
+};
 
 exports.forgotPassword = catchAsync(async (req, res, next) => {
   // 1) Get user based on POSTed email

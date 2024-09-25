@@ -84,7 +84,7 @@ userSchema.pre('save', async function (next) {
   // Only run this function if the password was actually modified
   if (!this.isModified('password')) return next();
 
-  console.log('Password before hashing:', this.password); // Debug line
+  // console.log('Password before hashing:', this.password); // Debug line
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;
   next();

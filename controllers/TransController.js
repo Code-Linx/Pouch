@@ -47,9 +47,9 @@ exports.getAllTransactions = async (req, res) => {
   }
 };
 
+// Get a specific transaction by ID
 exports.getTransactionById = async (req, res) => {
   try {
-    // Get a specific transaction by ID
     const transaction = await Transaction.findById(req.params.transactionId);
 
     if (!transaction) {
@@ -150,6 +150,55 @@ exports.getTransactionSummary = async (req, res) => {
         totalIncomeYear:
           totalIncomeYear.length > 0 ? totalIncomeYear[0].totalIncome : 0,
       },
+    });
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
+  }
+};
+
+exports.deleteTrans = async (req, res, next) => {
+  try {
+    const trx = await Transaction.findByIdAndDelete(req.params.id);
+    if (!trx) {
+      return res.status(404).json({
+        status: 'Failed',
+        message: 'No transaction document with that id',
+      });
+    }
+
+    res.status(204).json({
+      status: 'Success',
+      data: null,
+    });
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
+  }
+};
+
+exports.updateTrans = async (req, res, next) => {
+  try {
+    const { amount, description, currency, type } = req.body;
+    const trx = await Transaction.findByIdAndUpdate(
+      req.params.id,
+      {
+        amount: req.body.amount,
+        type: req.body.type,
+        description: req.body.description,
+        currency: req.body.currency,
+      },
+      { new: true }
+    );
+
+    if (!trx) {
+      return res.status(404).json({
+        status: 'Failed',
+        message: 'No transaction document with that id',
+      });
+    }
+
+    res.status(201).json({
+      status: 'Success',
+      data: { trx },
     });
   } catch (error) {
     res.status(500).json({ status: 'error', message: error.message });

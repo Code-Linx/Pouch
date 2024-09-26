@@ -70,7 +70,13 @@ const userSchema = new mongoose.Schema({
   kyc: {
     isVerified: { type: Boolean, default: false },
     verificationDate: { type: Date },
-    documents: { type: [String] }, // Paths to uploaded KYC documents
+    documents: [
+      {
+        url: { type: String, required: true }, // Cloudinary URL for the document
+        documentType: { type: String, required: true }, // Type of document (e.g., ID, address proof)
+        uploadedAt: { type: Date, default: Date.now }, // When the document was uploaded
+      },
+    ],
   },
   currency: {
     type: String,

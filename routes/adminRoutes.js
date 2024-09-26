@@ -64,4 +64,12 @@ router.get(
   adminController.getUserProfile
 );
 
+// Route for admins to verify KYC documents
+router.patch(
+  '/kyc/verify/:userId',
+  authController.protect,
+  authController.restrictTo('admin'),
+  adminController.verifyKYC
+);
+
 module.exports = router;

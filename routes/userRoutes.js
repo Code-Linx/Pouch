@@ -6,8 +6,12 @@ const budgetController = require('../controllers/budgetController');
 const dashboardController = require('../controllers/dashboardController');
 const categoryController = require('../controllers/categoryController');
 const transController = require('../controllers/TransController');
-const { route } = require('./adminRoutes');
+
+const multer = require('multer');
 const router = express.Router();
+
+// Multer configuration for file uploads
+const upload = multer({ dest: 'kyc-docs/' }); // Store files in 'kyc-docs/' folder
 
 router.post('/register', authController.signUp); // Fix this line
 router.post('/login', authController.login);
@@ -48,6 +52,17 @@ router.post(
   authController.protect,
   categoryController.createCategory
 ); // Create category
+
+// Route for users to upload KYC documents
+router.post(
+  '/kyc/upload',
+  authController.protect,
+  /* upload.fields([
+    { name: 'idCard', maxCount: 1 },
+    { name: 'proofOfAddress', maxCount: 1 },
+  ]), */
+  userController.uploadKYC
+);
 
 router.get('/me', authController.protect, userController.getMe);
 

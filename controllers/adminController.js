@@ -289,3 +289,27 @@ exports.getAllBudget = async (req, res, next) => {
     });
   } catch (error) {}
 };
+
+// Controller for admin to verify KYC documents
+exports.verifyKYC = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId, { new: true });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: 'fail', message: 'User not found' });
+    }
+    user.kyc.isVerified = true;
+    user.kyc.verificationDate = Date.now();
+    await user.save({ validateBeforeSave: false });
+    res.status(200).json({
+      status: 'success',
+      message: 'KYC documents verified successfully',
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};

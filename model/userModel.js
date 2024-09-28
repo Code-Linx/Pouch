@@ -63,6 +63,10 @@ const userSchema = new mongoose.Schema({
     default: true,
     select: false,
   },
+  accountDeletionRequestDate: {
+    type: Date,
+    default: null, // Default to null if no deletion request has been made
+  },
   DOB: {
     type: Date, // Use Mongoose's built-in Date type
     required: [true, 'Enter Your Date of Birth'],

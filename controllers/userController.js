@@ -1,8 +1,8 @@
 const User = require('../model/userModel');
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer');
-const streamifier = require('streamifier');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const { Email } = require('../util/email');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -47,7 +47,38 @@ exports.getMe = async (req, res, next) => {
   }
 };
 
-// Upload KYC document controller
+exports.deleteMe = async (req, res) => {
+  try {
+    // Find the user and mark them as inactive
+    const user = await User.findByIdAndUpdate(req.user.id, {
+      active: false,
+      accountDeletionRequestDate: Date.now(), // Store the deletion request date
+    });
+    if (!user) {
+      return res.status(404).json({
+        status: 'Failed',
+        message: 'User not found',
+      });
+    }
+    // Send an email to notify the user about the deletion process and 30-day grace period
+    const deletionInfoUrl = `${req.protocol}://${req.get(
+      'host'
+    )}/deletion-details`; // Example URL
+    const DeletionMail = new Email(user, deletionInfoUrl);
+    await DeletionMail.sendAccountDeletionNotice(); // Send account deletion notice email
+
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: err.message,
+    });
+  }
+};
+
 // Upload KYC document controller
 exports.uploadKYC = async (req, res) => {
   try {
@@ -104,4 +135,41 @@ exports.uploadKYC = async (req, res) => {
       message: err.message,
     });
   }
+};
+
+exports.updateUserData = async (req, res) => {
+  const { email, userName } = req.body;
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    { email, userName },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  if (!user) {
+    return res.status(404).json({ status: 'fail', message: 'User not found' });
+  }
+
+  res.status(201).json({
+    status: 'success',
+    message: "You've successfully update your account",
+    data: {
+      user,
+    },
+  });
+};
+
+exports.updateMyPassword = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('+password');
+
+    if (!user) {
+      return res.status(404).json({
+        status: 'fail',
+        message: 'User not found',
+      });
+    }
+  } catch (error) {}
 };

@@ -78,14 +78,16 @@ exports.signUp = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   console.log(req.headers.authorization); // Ensure it prints 'Bearer <token>'
 
-  //1. Check if email and password is specified
+  //1. Check if email and password are specified
   const { email, password } = req.body;
   if (!email || !password) {
     return next(new AppError('Please Provide Email and Password!', 401));
   }
 
-  //2. Check if user exist
-  const user = await User.findOne({ email }).select('+password');
+  //2. Check if user exists
+  const user = await User.findOne({ email }).select(
+    '+password +active +accountDeletionRequestDate'
+  );
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Invalid credentials', 401));
   }
@@ -97,7 +99,22 @@ exports.login = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 3. Extract device and location info
+  //4. Check if the user is inactive and within the grace period
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+  if (!user.active && user.accountDeletionRequestDate > thirtyDaysAgo) {
+    // Re-activate the user account
+    user.active = true; // Set user account back to active
+    await user.save(); // Save the changes
+
+    // Optionally, send a notification email about account reactivation
+    /*  const reactivationUrl = `${req.protocol}://${req.get(
+      'host'
+    )}/reactivation-notice`; // Example URL
+    const ReactivationMail = new Email(user, reactivationUrl);
+    await ReactivationMail.sendAccountReactivationNotice(); // Send reactivation notice email */
+  }
+
+  //5. Extract device and location info
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   const response = await axios.get(`https://ipinfo.io/${ip}/json`);
   const location = response.data.city
@@ -111,12 +128,12 @@ exports.login = catchAsync(async (req, res, next) => {
     location,
   };
 
-  // 4. Send login info email to user
+  //6. Send login info email to user
   const loginInfoUrl = `${req.protocol}://${req.get('host')}/login-details`; // Example URL for login details
   const Loginmail = new Email(user, loginInfoUrl, loginDetails); // Pass loginDetails
-  //await Loginmail.sendLoginNotification(); // Send the login notification
+  await Loginmail.sendLoginNotification(); // Send the login notification
 
-  //5 Generate JWT token
+  //7. Generate JWT token
   createSendToken(user, 200, res);
 });
 

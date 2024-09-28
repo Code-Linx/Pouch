@@ -1,6 +1,6 @@
-const nodemailer = require("nodemailer");
-const pug = require("pug");
-const { convert } = require("html-to-text");
+const nodemailer = require('nodemailer');
+const pug = require('pug');
+const { convert } = require('html-to-text');
 
 class Email {
   constructor(user, url, loginDetails) {
@@ -13,17 +13,18 @@ class Email {
   }
 
   newTransport() {
-    if (process.env.NODE_ENV === "production") {
+    if (process.env.NODE_ENV === 'production') {
       return nodemailer.createTransport({});
     }
 
     return nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
+      host: process.env.BREVO_HOST,
+      port: process.env.BREVO_PORT,
       auth: {
-        user: process.env.EMAIL_USERNAME,
-        pass: process.env.EMAIL_PASSWORD,
+        user: process.env.BREVO_USERNAME,
+        pass: process.env.BREVO_PASSWORD,
       },
+      secure: true,
     });
   }
 
@@ -49,27 +50,33 @@ class Email {
   }
 
   async sendWelcome() {
-    await this.send("Welcome", "Welcome to the Pouch Family!");
+    await this.send('Welcome', 'Welcome to the Pouch Family!');
   }
 
   async sendPasswordReset() {
     await this.send(
-      "passwordReset",
-      "Your password reset token (valid for only 10 minutes)"
+      'passwordReset',
+      'Your password reset token (valid for only 10 minutes)'
     );
   }
 
   async sendEmailVerification() {
-    await this.send("emailVerification", "Verify your email address");
+    await this.send('emailVerification', 'Verify your email address');
   }
 
   async sendVerificationSuccess() {
-    await this.send("verificationSuccess", "Email Verification Successful!");
+    await this.send('verificationSuccess', 'Email Verification Successful!');
   }
 
+  async sendAccountDeletionNotice() {
+    await this.send(
+      'accountDeletionNotice',
+      'Your account will be permanently deleted in 30 days'
+    );
+  }
   async sendLoginNotification() {
-    const subject = "Login Notification";
-    const template = "loginNotification";
+    const subject = 'Login Notification';
+    const template = 'loginNotification';
     await this.send(template, subject);
   }
 }

@@ -7,11 +7,7 @@ const dashboardController = require('../controllers/dashboardController');
 const categoryController = require('../controllers/categoryController');
 const transController = require('../controllers/TransController');
 
-const multer = require('multer');
 const router = express.Router();
-
-// Multer configuration for file uploads
-const upload = multer({ dest: 'kyc-docs/' }); // Store files in 'kyc-docs/' folder
 
 router.post('/register', authController.signUp); // Fix this line
 router.post('/login', authController.login);
@@ -65,6 +61,18 @@ router.post(
 );
 
 router.get('/me', authController.protect, userController.getMe);
+
+router.patch(
+  '/deactivateMyAcc',
+  authController.protect,
+  userController.deleteMe
+);
+
+router.patch(
+  '/updateUser',
+  authController.protect,
+  userController.updateUserData
+);
 
 router.patch(
   '/editBudget/:id',

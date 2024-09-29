@@ -297,7 +297,7 @@ exports.verifyKYC = async (req, res) => {
     if (!user) {
       return res
         .status(404)
-        .json({ status: 'fail', message: 'User not found' });
+        .json({ status: 'Fail', message: 'User not found' });
     }
     user.kyc.isVerified = true;
     user.kyc.verificationDate = Date.now();

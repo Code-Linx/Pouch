@@ -1,0 +1,31 @@
+doctype html
+html(lang="en")
+  head
+    title #{title} | Pouch
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet" href="/css/styles.css")
+    block head  // Placeholder for additional head content in child templates
+
+  body
+    header
+      nav.navbar
+        .container
+          a.navbar-brand(href='/') Pouch
+          ul.nav-links
+            li
+              a(href='/dashboard') Dashboard
+            li
+              a(href='/logout') Logout
+
+    // Main content section
+    main.container
+      block content  // Placeholder for content in child templates
+
+    // Footer section
+    footer.footer
+      .container
+        p &copy; #{new Date().getFullYear()} Pouch. All rights reserved.
+
+    script(src="/js/main.js")
+    

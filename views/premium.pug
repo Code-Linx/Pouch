@@ -1,0 +1,29 @@
+extends layout
+
+block head
+  title Premium Subscription | Pouch
+
+block content
+  .premium-container
+    h1 Unlock Premium Features
+    p Enjoy advanced features with a Pouch Premium subscription.
+    
+    ul.premium-benefits
+      li Advanced Budgeting Tools
+      li Detailed Financial Reports
+      li Exclusive Premium Support
+
+    button#subscribeButton Subscribe Now
+
+    a.cancel-link(href='/') Cancel
+
+block scripts
+ //- script(src="https://js.stripe.com/v3/")  // Stripe.js-
+  script.
+    const stripe = Stripe('YOUR_PUBLIC_KEY');
+
+    document.getElementById('subscribeButton').addEventListener('click', async () => {
+      const response = await fetch('/api/v1/subscription/create-checkout-session');
+      const sessionData = await response.json();
+      stripe.redirectToCheckout({ sessionId: sessionData.session.id });
+    });

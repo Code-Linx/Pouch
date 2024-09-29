@@ -9,6 +9,8 @@ const transController = require('../controllers/TransController');
 
 const router = express.Router();
 
+router.get('/premium', userController.renderpage);
+
 router.post('/register', authController.signUp); // Fix this line
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);

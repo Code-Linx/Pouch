@@ -104,14 +104,13 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user.active && user.accountDeletionRequestDate > thirtyDaysAgo) {
     // Re-activate the user account
     user.active = true; // Set user account back to active
-    await user.save(); // Save the changes
+    await user.save({ validateBeforeSave: false }); // Save the changes
 
-    // Optionally, send a notification email about account reactivation
-    /*  const reactivationUrl = `${req.protocol}://${req.get(
+    const reactivationUrl = `${req.protocol}://${req.get(
       'host'
     )}/reactivation-notice`; // Example URL
     const ReactivationMail = new Email(user, reactivationUrl);
-    await ReactivationMail.sendAccountReactivationNotice(); // Send reactivation notice email */
+    await ReactivationMail.sendAccountReactivationNotice(); // Send reactivation notice email
   }
 
   //5. Extract device and location info

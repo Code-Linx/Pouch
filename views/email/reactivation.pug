@@ -1,0 +1,16 @@
+extends layout
+
+block content
+   h1 Hi #{firstName},
+    p We noticed that you recently logged into your account and your account has been successfully reactivated. We're glad to have you back!
+    
+    p Your account was scheduled for deletion but since you logged in within the 30-day grace period, it is now active again.
+    
+    p You can continue using all the services on our platform.
+    
+    p If you have any questions, feel free to reply to this email.
+    
+    p Kind regards,
+    p The Team
+    
+    a(href=`#{url}`) View Your Account

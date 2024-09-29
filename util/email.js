@@ -79,6 +79,13 @@ class Email {
     const template = 'loginNotification';
     await this.send(template, subject);
   }
+
+  async sendAccountReactivationNotice() {
+    await this.send(
+      'reactivation', // template name (reactivation.pug)
+      'Your Account has been Reactivated!'
+    );
+  }
 }
 
 module.exports = { Email };

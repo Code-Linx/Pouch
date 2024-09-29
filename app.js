@@ -9,6 +9,7 @@ const { AppError } = require('./util/appError');
 const userRouter = require('./routes/userRoutes');
 const adminRouter = require('./routes/adminRoutes');
 const transRoueter = require('./routes/transcationRoute');
+const viewRouter = require('./routes/viewRoutes');
 const globalErrorHandler = require('./controllers/ErrorController');
 
 // START APP
@@ -99,6 +100,7 @@ app.use('/', userRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/trans', transRoueter);
+app.use('/', viewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

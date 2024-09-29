@@ -160,17 +160,3 @@ exports.updateUserData = async (req, res) => {
     },
   });
 };
-
-//RENDER PAGE
-exports.renderpage = (req, res) => {
-  try {
-    res.status(200).render('premium', {
-      title: 'Subscribe to Premium',
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: 'error',
-      message: err.message,
-    });
-  }
-};

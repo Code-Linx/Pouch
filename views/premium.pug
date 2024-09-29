@@ -17,13 +17,4 @@ block content
 
     a.cancel-link(href='/') Cancel
 
-block scripts
- //- script(src="https://js.stripe.com/v3/")  // Stripe.js-
-  script.
-    const stripe = Stripe('YOUR_PUBLIC_KEY');
 
-    document.getElementById('subscribeButton').addEventListener('click', async () => {
-      const response = await fetch('/api/v1/subscription/create-checkout-session');
-      const sessionData = await response.json();
-      stripe.redirectToCheckout({ sessionId: sessionData.session.id });
-    });

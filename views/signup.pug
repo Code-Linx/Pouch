@@ -1,0 +1,32 @@
+extends layout
+
+block head
+  title Signup | Pouch
+
+block content
+  .signup-container
+    h1 Create Your Pouch Account
+    p Sign up to start managing your finances with Pouch.
+
+    form(action="/api/v1/users/signup" method="POST" class="form-container")
+      .form-group
+        label(for="firstName") First Name:
+        input(type="text" name="firstName" required placeholder="Enter your first name")
+
+      .form-group
+        label(for="lastName") Last Name:
+        input(type="text" name="lastName" required placeholder="Enter your last name")
+
+      .form-group
+        label(for="email") Email:
+        input(type="email" name="email" required placeholder="Enter your email")
+
+      .form-group
+        label(for="password") Password:
+        input(type="password" name="password" required placeholder="Enter your password")
+
+      button(type="submit" class="button") Sign Up
+
+    p Already have an account? 
+    a(href='/login') Log in here
+

@@ -1,0 +1,27 @@
+extends layout
+
+block head
+  title Dashboard | Pouch
+
+block content
+  .dashboard-container
+    h1 Welcome,
+    p Here’s an overview of your recent activity and financial summary.
+    
+    .dashboard-section
+      h2 Budget Overview
+      p Your current budget for this month: $500
+      p Expenses this month: $300
+
+    .dashboard-section
+      h2 Recent Transactions
+      ul.transactions-list
+        li Transaction 1 - $50
+        li Transaction 2 - $100
+        li Transaction 3 - $150
+
+    .dashboard-section
+        h3 Want to unlock more features?
+        a.button(href='/premium') Upgrade to Premium
+     
+

@@ -5,6 +5,13 @@ const cron = require('node-cron');
 const User = require('./model/userModel');
 const morgan = require('morgan');
 
+//WEBPACK CONFIG
+const { createProxyMiddleware } = require('http-proxy-middleware'); // Require the proxy middleware
+const webpack = require('webpack');
+const webpackConfig = require('./webpack.config');
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
+
 const { AppError } = require('./util/appError');
 const userRouter = require('./routes/userRoutes');
 const adminRouter = require('./routes/adminRoutes');
@@ -25,6 +32,30 @@ if ((process.env.NODE_ENV = 'development')) {
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
+
+const compiler = webpack(webpackConfig);
+
+// Use Webpack Dev Middleware
+app.use(
+  webpackDevMiddleware(compiler, {
+    publicPath: webpackConfig.output.publicPath,
+    stats: { colors: true },
+  })
+);
+
+//You can use webpack-dev-middleware with an output file by setting the writeToDisk option:
+//This will write the compiled output to a file in the specified output directory.
+
+// app.use(
+//   webpackDevMiddleware(compiler, {
+//     publicPath: webpackConfig.output.publicPath,
+//     stats: { colors: true },
+//     writeToDisk: true, // Add this option
+//   })
+// );
+
+// Use Webpack Hot Middleware
+app.use(webpackHotMiddleware(compiler));
 
 //BODY PARSER
 app.use(express.json());

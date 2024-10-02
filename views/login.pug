@@ -8,17 +8,16 @@ block content
     h1 Log in to your Pouch account
     p Please enter your credentials to access your dashboard.
 
-    form(action="/api/v1/users/login" method="POST" class="form-container")
+    form(id="loginForm" class="form-container" method="POST" action="/api/v1/users/login")
       .form-group
         label(for="email") Email:
-        input(type="email" name="email" required placeholder="Enter your email")
+        input(type="email" id="email" name="email" required placeholder="Enter your email")
 
       .form-group
         label(for="password") Password:
-        input(type="password" name="password" required placeholder="Enter your password")
+        input(type="password" id="password" name="password" required placeholder="Enter your password")
 
       button(type="submit" class="button") Log In
 
     p Don't have an account? 
     a(href='/signup') Sign up here
-

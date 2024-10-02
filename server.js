@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 
 // process.on("uncaughtException", (err) => {
 //   console.log(err.name, err.message);
@@ -7,9 +7,9 @@ const dotenv = require("dotenv");
 //   process.exit(1); // Exit process with non-zero status code
 // });
 
-dotenv.config({ path: "./.env" });
+dotenv.config({ path: './.env' });
 
-const app = require("./app");
+const app = require('./app');
 
 //READ DB URL FROM .env FILE
 //SAVE INTO A VARIABLE
@@ -18,7 +18,7 @@ const dbURL = process.env.Database_LOCAL;
 mongoose
   .connect(dbURL)
   .then(() => {
-    console.log("DB connection successful!");
+    console.log('DB connection successful!');
   })
   .catch((err) => {
     console.error(`Mongoose connection error: ${err.message}`);

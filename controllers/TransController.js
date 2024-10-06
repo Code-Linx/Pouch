@@ -27,6 +27,9 @@ exports.createTransaction = async (req, res) => {
 exports.getAllTransactions = async (req, res) => {
   console.log('User ID:', req.user._id); // Debugging line
   try {
+    // 1. Extract sorting query
+    let sortBy = req.query.sort ? req.query.sort : '-createdAt'; // Default to sorting by createdAt descending
+
     // Fetch all transactions for the logged-in user
     const transactions = await Transaction.find({ userId: req.user._id });
     if (transactions.length === 0) {

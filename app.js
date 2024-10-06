@@ -127,11 +127,11 @@ cron.schedule(cronSchedule, async () => {
 });
 
 //ROUTES
+app.use('/', viewRouter);
 app.use('/', userRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/trans', transRoueter);
-app.use('/', viewRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

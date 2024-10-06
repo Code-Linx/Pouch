@@ -26,12 +26,58 @@ exports.createTransaction = async (req, res) => {
 // Get all transactions for the current user
 exports.getAllTransactions = async (req, res) => {
   console.log('User ID:', req.user._id); // Debugging line
-  try {
-    // 1. Extract sorting query
-    let sortBy = req.query.sort ? req.query.sort : '-createdAt'; // Default to sorting by createdAt descending
 
-    // Fetch all transactions for the logged-in user
-    const transactions = await Transaction.find({ userId: req.user._id });
+  try {
+    // 1. Filtering
+    const queryObj = { ...req.query };
+    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    excludedFields.forEach((el) => delete queryObj[el]); // Remove non-filtering fields
+
+    // Handle advanced filtering for ranges like { amount: { gte: 100, lte: 1000 } }
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+    let query = Transaction.find({
+      userId: req.user._id,
+      ...JSON.parse(queryStr),
+    });
+
+    // 2. Sorting
+    if (req.query.sort) {
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+    } else {
+      query = query.sort('-createdAt'); // Default sorting by createdAt (descending)
+    }
+
+    // 3. Field Limiting (Selecting specific fields)
+    if (req.query.fields) {
+      const fields = req.query.fields.split(',').join(' ');
+      query = query.select(fields);
+    } else {
+      query = query.select('-__v'); // Exclude version field by default
+    }
+
+    // 4. Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+    query = query.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numTransactions = await Transaction.countDocuments({
+        userId: req.user._id,
+      });
+      if (skip >= numTransactions) {
+        return res
+          .status(404)
+          .json({ status: 'fail', message: 'Page does not exist' });
+      }
+    }
+
+    // Execute query
+    const transactions = await query;
+
+    // Check if there are no transactions
     if (transactions.length === 0) {
       return res.status(200).json({
         status: 'Success',
@@ -39,8 +85,10 @@ exports.getAllTransactions = async (req, res) => {
       });
     }
 
+    // Send the response
     res.status(200).json({
       status: 'success',
+      results: transactions.length,
       data: {
         transactions,
       },

@@ -6,6 +6,7 @@ const budgetController = require('../controllers/budgetController');
 const dashboardController = require('../controllers/dashboardController');
 const categoryController = require('../controllers/categoryController');
 const transController = require('../controllers/TransController');
+const stripeController = require('../controllers/premiumController');
 
 const router = express.Router();
 
@@ -101,5 +102,7 @@ router.patch(
   authController.restrictTo('user'),
   transController.updateTrans
 );
+
+router.post('/create-checkout-session', stripeController.createCheckoutSession);
 
 module.exports = router;

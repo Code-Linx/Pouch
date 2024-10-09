@@ -1,20 +1,20 @@
 extends layout
 
 block head
-  title Premium Subscription | Pouch
-
+  title Premium | Pouch
+  script(src="https://js.stripe.com/v3/")
+  
 block content
   .premium-container
-    h1 Unlock Premium Features
-    p Enjoy advanced features with a Pouch Premium subscription.
-    
-    ul.premium-benefits
-      li Advanced Budgeting Tools
-      li Detailed Financial Reports
-      li Exclusive Premium Support
+    h1 Upgrade to Pouch Premium
+    p Enjoy advanced features with a premium subscription.
 
-    button#subscribeButton Subscribe Now
+    button#checkout-btn Upgrade to Premium
 
-    a.cancel-link(href='/') Cancel
-
-
+  script.
+    const stripe = Stripe("#{process.env.STRIPE_PUBLIC_KEY}");
+    document.querySelector("#checkout-btn").addEventListener("click", async () => {
+      const res = await fetch("/api/v1/payments/checkout-session");
+      const { sessionId } = await res.json();
+      stripe.redirectToCheckout({ sessionId });
+    });

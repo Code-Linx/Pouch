@@ -91,9 +91,9 @@ EMAIL_PORT=email-port
 npm start
 ````
 
-```
 ## Folder Structure
 
+```
 ├── controllers
 ├── middlewares
 ├── model

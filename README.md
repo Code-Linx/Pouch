@@ -1,7 +1,5 @@
 # Pouch: Personal Budget Tracker
 
-(https://img.shields.io/badge/Node.js-Express.js-brightgreen)
-
 ## Table of Contents
 
 - [Project Overview](#project-overview)
@@ -10,7 +8,6 @@
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [API Endpoints](#api-endpoints)
-- [Admin Dashboard](#admin-dashboard)
 - [Security](#security)
 - [Testing](#testing)
 - [Contributing](#contributing)

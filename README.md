@@ -124,20 +124,28 @@ npm start
 
 ### User Management
 
+```
 - GET /api/v1/users/me - Get user profile
 - GET /api/v1/users/dashboard - User Dashboard
 - PATCH /api/v1/users/updateUser - Update user profile but not password
 - DELETE /api/v1/users/deactivateMyAcc - Delete user account
 - POST /api/v1/users/kyc/upload - Upload kyc Docs
+```
 
 ### Budgets
+
+```
 
 - POST /api/v1/users/addbudgets - Create a budget
 - POST /api/v1/users/addCategory - Create a budget category
 - GET /api/v1/users/getAllBudget - Get all Budgets
 - DELETE /api/v1/users/removeBudget/:id - Delete Budget
 
+```
+
 ### Transactions
+
+```
 
 - GET /api/v1/trans/:transId - Get Transcation
 - GET /api/v1/trans/getAllTrx - Get all Transcation
@@ -145,8 +153,11 @@ npm start
 - POST /api/v1/trans/createTrx - Create Transcation
 - DELETE /api/v1/users/deleteTrx/:transId - Delete Transcation
 - PATCH /api/v1/users/updatetrx/:transId - Update Transcation Entry
+```
 
 ### Admin Endpoints
+
+```
 
 - GET /api/v1/admin/getAllUser - Get all users
 - GET /api/v1/admin/:id/transaction-summary - Get User summary
@@ -159,20 +170,24 @@ npm start
 - PATCH /api/v1/admin/updateDoc/:id - Update user
 - DELETE /api/v1/admin/deleteAcc/:id - Delete User
 
+```
+
 ## Security
 
 This application follows industry standards for securing user data and transactions. Below are the key security measures implemented:
 
-1. Encryption
-   All sensitive user data, such as passwords, are encrypted using bcrypt before being stored in the database. Other sensitive information is encrypted using the crypto module.
+- Encryption
+  All sensitive user data, such as passwords, are encrypted using bcrypt before being stored in the database. Other sensitive information is encrypted using the crypto module.
 
-2. Data Sanitization, Secure HTTP headers, Parameter Pollution and several other security techniques against attacks like brute force, XSS, DoS and so on.
+- Data Sanitization, Secure HTTP headers, Parameter Pollution and several other security techniques against attacks like brute force, XSS, DoS and so on.
 
 ## Testing
 
 All routes are tested using postman API tester.
 
 ## Contributing
+
+```
 
 Contributions are welcome! If you want to contribute to this project, please follow these steps:
 
@@ -183,6 +198,7 @@ Push to the branch (git push origin feature/newFeature)
 Open a Pull Request
 Code of Conduct
 Please adhere to the code of conduct to maintain a collaborative and friendly environment.
+```
 
 ## License
 
@@ -190,5 +206,7 @@ This project is licensed under the MIT License. See the LICENSE file for more in
 
 ## Contact
 
+```
 Project Maintainer - Dennis Enoakpo
 Email - codetitan2206@gmail.com
+```

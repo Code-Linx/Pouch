@@ -91,6 +91,7 @@ EMAIL_PORT=email-port
 npm start
 ````
 
+```
 ## Folder Structure
 
 ├── controllers
@@ -106,6 +107,7 @@ npm start
 ├── app.js
 ├── package.json
 └── server.js
+```
 
 ## API Endpoints
 

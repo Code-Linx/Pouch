@@ -1,5 +1,7 @@
 # Pouch: Personal Budget Tracker
 
+![POUCH API](https://img.shields.io/badge/Node.js-Express.js-brightgreen)
+
 ## Table of Contents
 
 - [Project Overview](#project-overview)

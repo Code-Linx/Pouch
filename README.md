@@ -113,12 +113,14 @@ npm start
 
 ### User Authentication
 
+```
 - POST /api/v1/users/register - Register a new user
 - POST /api/v1/users/verifyEmail/:token - Verify Email
 - POST /api/v1/users/login - Log in a user
 - POST /api/v1/users/forgetPassword - Send password reset link
 - PATCH /api/v1/users/resetPassword/:token - Reset user password
 - PATCH /api/v1/users//updateMypassword - Update user password
+```
 
 ### User Management
 

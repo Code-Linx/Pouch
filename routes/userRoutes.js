@@ -103,6 +103,10 @@ router.patch(
   transController.updateTrans
 );
 
-router.post('/create-checkout-session', stripeController.createCheckoutSession);
+router.get(
+  '/create-checkout-session',
+  authController.protect,
+  stripeController.createCheckoutSession
+);
 
 module.exports = router;

@@ -3,6 +3,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cron = require('node-cron');
 const User = require('./model/userModel');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 const morgan = require('morgan');
 
 //WEBPACK CONFIG
@@ -30,6 +34,19 @@ if ((process.env.NODE_ENV = 'development')) {
   app.use(morgan('dev'));
 }
 
+app.use(xss());
+
+app.use(helmet());
+
+// Limit requests from same API
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour!',
+});
+
+app.use(mongoSanitize());
+app.use('/api', limiter);
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -128,7 +145,6 @@ cron.schedule(cronSchedule, async () => {
 
 //ROUTES
 app.use('/', viewRouter);
-app.use('/', userRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/trans', transRoueter);

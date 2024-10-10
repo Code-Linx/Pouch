@@ -13,7 +13,7 @@ const app = require('./app');
 
 //READ DB URL FROM .env FILE
 //SAVE INTO A VARIABLE
-const dbURL = process.env.Database_LOCAL;
+const dbURL = process.env.Database_URL;
 
 mongoose
   .connect(dbURL)

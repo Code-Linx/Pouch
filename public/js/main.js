@@ -1,9 +1,10 @@
 import { register } from './register';
 import { login } from './login';
+import { premiumPayment } from './stripe';
 
 const registerForm = document.getElementById('registerForm');
 const loginForm = document.getElementById('loginForm');
-
+const paymentBtn = document.getElementById('payment-checkout');
 if (registerForm) {
   registerForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -40,5 +41,19 @@ if (loginForm) {
 
     // Call the Login function
     await login(email, password);
+  });
+}
+
+if (paymentBtn) {
+  paymentBtn.addEventListener('click', async (e) => {
+    e.preventDefault(); // Prevent default form action if it's inside a form
+    e.target.textContent = 'Processing...';
+
+    try {
+      await premiumPayment();
+    } catch (err) {
+      console.log('Payment error:', err);
+      e.target.textContent = 'Upgrade to Premium'; // Reset button text in case of error
+    }
   });
 }

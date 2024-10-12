@@ -7,6 +7,14 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const logger = require('./util/logger');
+// Initialize Datadog APM
+const tracer = require('dd-trace').init({
+  analytics: true, // Enable analytics
+  service: 'pouch-backend', // Your service name
+  env: process.env.NODE_ENV || 'development', // Environment (production/development)
+});
+
 const morgan = require('morgan');
 
 //WEBPACK CONFIG
@@ -28,6 +36,18 @@ const app = express();
 
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
+
+//Wiston Logger
+app.use((req, res, next) => {
+  logger.info(`${req.method} ${req.url}`);
+  next();
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  logger.error(err.message);
+  res.status(500).send('Server Error');
+});
 
 //DEVELOPMENT LOGGING
 if ((process.env.NODE_ENV = 'development')) {

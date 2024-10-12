@@ -8,6 +8,7 @@ const uaParser = require('ua-parser-js'); // Library for parsing user agent (dev
 const { catchAsync } = require('../util/catchAsync');
 const { AppError } = require('../util/appError');
 const { Email } = require('../util/email');
+const securityLogger = require('../util/securityLogger');
 
 // Helper function to sign a JWT
 const signToken = (id) => {
@@ -89,6 +90,7 @@ exports.login = catchAsync(async (req, res, next) => {
     '+password +active +accountDeletionRequestDate'
   );
   if (!user || !(await user.correctPassword(password, user.password))) {
+    securityLogger.warn(`Failed login attempt for email: ${email}`);
     return next(new AppError('Invalid credentials', 401));
   }
 
@@ -135,16 +137,6 @@ exports.login = catchAsync(async (req, res, next) => {
   //7. Generate JWT token
   createSendToken(user, 200, res);
 });
-
-/* exports.restrictToPremium = (req, res, next) => {
-  if (!req.user || !req.user.isPremium) {
-    return res.status(403).render('error', {
-      title: 'Premium Required',
-      message: 'You must be a premium member to access this feature.',
-    });
-  }
-  next();
-}; */
 
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there

@@ -1,4 +1,4 @@
-# Pouch: Personal Budget Tracker
+# Pouch: Personal Budget Tracker Backend Api
 
 ![POUCH API](https://img.shields.io/badge/Node.js-Express.js-brightgreen)
 
@@ -85,6 +85,12 @@ EMAIL_USERNAME=email-service-username
 EMAIL_PASSWORD=email-password
 EMAIL_HOST=email-host
 EMAIL_PORT=email-port
+CLOUDINARY_CLOUD_NAME=name
+CLOUDINARY_API_KEY=api-key
+CLOUDINARY_API_SECRET=api-secret-key
+
+CRON_SCHEDULE_DEV=
+CRON_SCHEDULE_PROD=
 
 5. **Install dependencies**
 ```bash

@@ -138,6 +138,16 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+/* exports.restrictToPremium = (req, res, next) => {
+  if (!req.user || !req.user.isPremium) {
+    return res.status(403).render('error', {
+      title: 'Premium Required',
+      message: 'You must be a premium member to access this feature.',
+    });
+  }
+  next();
+}; */
+
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there
   let token;
